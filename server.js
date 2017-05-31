@@ -18,22 +18,12 @@ server.on('request',  ( request, response ) => {
 
 	response.writeHead(200)
 	let query = url.parse(request.url, true).query
-	if (query.name === undefined ) {
-		response.write('Bonjour anonyme')
-		//http://localhost:8080/?name=marc
-	} else {
-		response.write("Bonjour " + query.name)
-		//http://localhost:8080
-	}
-	
-	//fin de la connexion
-	response.end()
-	
+	let name = query.name === undefined ? "anonyme" : query.name
 
-
-	/*
-	//lorsque une requete arrive je lit un fichier
-	fs.readFile('index.html', (err,data) => {
+	
+	//lorsque une requete arrive je lit un fichier 
+	//on utilise l encodage en utf-8 pour que data soit une chaine de caracteres
+	fs.readFile('index.html', 'utf-8', (err,data) => {
 		//s il y a des erreurs
 		if (err) {
 			response.writeHead(404)
@@ -43,6 +33,9 @@ server.on('request',  ( request, response ) => {
 			response.writeHead(200, { 
 				'Content-Type': 'text/html; charset=utf-8'	
 			});
+
+			//je remplace le texte
+			data = data.replace('{{ name }}', name)
 		
 			//on transmet les donnees
 			response.end(data);
@@ -50,13 +43,13 @@ server.on('request',  ( request, response ) => {
 
 
 	})
-	*/
+	
 
 
 
 })
 
-//ecoute sur le port 8080   http://localhost:8080/
+//ecoute sur le port 8080   http://localhost:8080/?name=marc
 server.listen(8080)
 
 
