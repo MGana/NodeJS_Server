@@ -32,18 +32,30 @@ fs.readFile('demo.mp4' , (err, data) => {
 //l idee est de lire un fichier et d avoir un evenement qui permet de lire bloc par bloc
 
 
+
 let fs = require('fs')
 let file = 'demo.mp4'
 
-let read = fs.createReadStream(file)
 
-//chunk est un morceau , ici de type buffer
-//http://devdocs.io/node/stream#stream_class_stream_readable
-read.on('data', (chunk) => {
+//j'utilise stat pour pouvoir connaitre l etat de progression de mon fichier
+fs.stat(file , (err, stat) => {
 
-	console.log('J ai lu ' + chunk.length)
-} )
+	let total = stat.size
 
-read.on('end', () => {
-	console.log('J ai fini la lecture')
+	let progress = 0
+
+	let read = fs.createReadStream(file)
+
+	//chunk est un morceau , ici de type buffer
+	//http://devdocs.io/node/stream#stream_class_stream_readable
+	read.on('data', (chunk) => {
+
+		progress += chunk.length
+		console.log('J ai lu ' + Math.round( (100*progress/total)) + "%" )
+	} )
+
+	read.on('end', () => {
+		console.log('J ai fini la lecture')
+	})
+
 })
