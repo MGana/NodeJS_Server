@@ -6,6 +6,8 @@ let http = require('http')
 //fs file system pour lecture des fichiers
 let fs = require('fs')
 
+let url = require('url')
+
 
 let server = http.createServer()
 
@@ -13,6 +15,23 @@ let server = http.createServer()
 //})
 
 server.on('request',  ( request, response ) => {
+
+	response.writeHead(200)
+	let query = url.parse(request.url, true).query
+	if (query.name === undefined ) {
+		response.write('Bonjour anonyme')
+		//http://localhost:8080/?name=marc
+	} else {
+		response.write("Bonjour " + query.name)
+		//http://localhost:8080
+	}
+	
+	//fin de la connexion
+	response.end()
+	
+
+
+	/*
 	//lorsque une requete arrive je lit un fichier
 	fs.readFile('index.html', (err,data) => {
 		//s il y a des erreurs
@@ -31,6 +50,9 @@ server.on('request',  ( request, response ) => {
 
 
 	})
+	*/
+
+
 
 })
 
